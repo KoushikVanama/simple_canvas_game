@@ -57,8 +57,38 @@ var reset = function () {
 	monster.y = 32 + (Math.random() * (canvas.height - 100));
 };
 
+function resetToNearestBorder(x,y){
+	if(x<=0 && y<=0) { // TOP_LEFT
+		hero.x = 0;
+		hero.y = 0;
+	} else if(x>=480 && y>=440){ // BOTTOM_RIGHT
+		hero.x = 480;
+		hero.y = 440;
+	} else if(x>=480 && y<=0){ // TOP_RIGHT
+		hero.x = 480;
+		hero.y = 0;
+	} else if(x<=0 && y>=440){ // BOTTOM_LEFT
+		hero.x = 0;
+		hero.y = 440;
+	} else if (x<=0 && y>=0){ // LEFT
+		hero.x = 0;
+		hero.y = y;
+	} else if (x>=480 && y<=440){ // RIGHT
+		hero.x = 480;
+		hero.y = y;
+	} else if (x>=0 && y<=0){ // TOP
+		hero.x = x;
+		hero.y = 0;
+	} else if (x>=0 && y>=440){ // BOTTOM
+		hero.x = x;
+		hero.y = 440;
+	}
+}
+
 // Update game objects
 var update = function (modifier) {
+	if(hero.x <= 0 || hero.x >= 440) resetToNearestBorder(hero.x, hero.y);
+	if(hero.y <= 0 || hero.y >= 400) resetToNearestBorder(hero.x, hero.y);
 	if (38 in keysDown) { // Player holding up
 		hero.y -= hero.speed * modifier;
 	}
@@ -78,10 +108,10 @@ var update = function (modifier) {
 		&& monster.x <= (hero.x + 32)
 		&& hero.y <= (monster.y + 32)
 		&& monster.y <= (hero.y + 32)
-	) {
-		++monstersCaught;
-		reset();
-	}
+		) {
+			++monstersCaught;
+			reset();
+		}
 };
 
 // Draw everything
